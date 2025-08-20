@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebAPI Standard</title>
+    <style>
+        :root {
+            --main-color: #005a9c;
+            --secondary-color: #3c790a;
+            --text-color: #222;
+            --light-gray: #f7f7f9;
+            --border-color: #ddd;
+            --link-color: #0000ee;
+            --visited-link: #551a8b;
+            --code-bg: #f6f8fa;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        header {
+            background-color: var(--main-color);
+            color: white;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+        
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 0.3rem;
+        }
+        
+        nav {
+            width: 280px;
+            background-color: var(--light-gray);
+            border-right: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            height: calc(100vh - 73px);
+            top: 73px;
+            overflow-y: auto;
+        }
+        
+        nav ul {
+            list-style: none;
+        }
+        
+        nav ul li {
+            padding: 0.2rem 1rem;
+        }
+        
+        nav ul li.section-title {
+            font-weight: 600;
+            margin-top: 1rem;
+            color: var(--secondary-color);
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            display: block;
+            padding: 0.3rem 0;
+            border-left: 3px solid transparent;
+            padding-left: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        nav ul li a:hover {
+            border-left: 3px solid var(--secondary-color);
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        nav ul li a.active {
+            border-left: 3px solid var(--main-color);
+            font-weight: 500;
+        }
+        
+        main {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            max-width: 900px;
+        }
+        
+        h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--main-color);
+            font-weight: 600;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--secondary-color);
+        }
+        
+        h4 {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        ul, ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        
+        code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            background-color: var(--code-bg);
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background-color: var(--code-bg);
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        
+        a {
+            color: var(--link-color);
+        }
+        
+        a:visited {
+            color: var(--visited-link);
+        }
+        
+        .definition {
+            background-color: #f8f8f8;
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .note {
+            background-color: #fff8dc;
+            border-left: 4px solid #ffd700;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .warning {
+            background-color: #fff0f0;
+            border-left: 4px solid #ff4d4d;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        table, th, td {
+            border: 1px solid var(--border-color);
+        }
+        
+        th, td {
+            padding: 0.5rem;
+            text-align: left;
+        }
+        
+        th {
+            background-color: var(--light-gray);
+        }
+        
+        dl {
+            margin: 1rem 0;
+        }
+        
+        dt {
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+        
+        dd {
+            margin-left: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-number {
+            color: #666;
+            font-weight: normal;
+            margin-right: 0.5rem;
+        }
+        
+        #search-container {
+            margin: 1rem;
+            position: relative;
+        }
+        
+        #search {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: var(--light-gray);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .example-box {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+        }
+        
+        .example-output {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        
+        .dfn {
+            font-style: italic;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .pagination a {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            text-decoration: none;
+            color: var(--main-color);
+            background-color: white;
+        }
+        
+        .pagination a:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .pagination .prev::before {
+            content: "← ";
+        }
+        
+        .pagination .next::after {
+            content: " →";
+        }
+        
+        .page-url {
+            font-family: monospace;
+            margin-top: 1rem;
+            color: #666;
+            font-size: 0.85rem;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 0.5rem;
+        }
+        
+        /* Hide sections by default */
+        main section {
+            display: none;
+        }
+        
+        main section.active {
+            display: block;
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            nav {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 1rem;
+            }
+            
+            main {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>WebAPI Standard</h1>
+        <div class="subtitle">Living Standard — August 20, 2025</div>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <div id="search-container">
+                <input type="text" id="search" placeholder="Search..." onkeyup="filterNavItems()">
+            </div>
+            
+            <ul id="nav-list">
+                <li class="section-title">Introduction</li>
+                <li><a href="#about" data-page="about">About this Standard</a></li>
+                <li><a href="#history" data-page="history">History</a></li>
+                <li><a href="#audience" data-page="audience">Target Audience</a></li>
+                
+                <li class="section-title">Core Concepts</li>
+                <li><a href="#fetch-api" data-page="fetch-api">Fetch API</a></li>
+                <li><a href="#promises" data-page="promises">Promises</a></li>
+                <li><a href="#async-await" data-page="async-await">Async/Await</a></li>
+                
+                <li class="section-title">Request & Response</li>
+                <li><a href="#request-interface" data-page="request-interface">Request Interface</a></li>
+                <li><a href="#response-interface" data-page="response-interface">Response Interface</a></li>
+                <li><a href="#headers" data-page="headers">Headers</a></li>
+                
+                <li class="section-title">Advanced Topics</li>
+                <li><a href="#streams" data-page="streams">Streams API</a></li>
+                <li><a href="#service-workers" data-page="service-workers">Service Workers</a></li>
+                <li><a href="#cache-api" data-page="cache-api">Cache API</a></li>
+                
+                <li class="section-title">Examples</li>
+                <li><a href="#basic-fetch" data-page="basic-fetch">Basic Fetch</a></li>
+                <li><a href="#post-request" data-page="post-request">POST Request</a></li>
+                <li><a href="#streaming-response" data-page="streaming-response">Streaming Response</a></li>
+                
+                <li class="section-title">Appendices</li>
+                <li><a href="#browser-compatibility" data-page="browser-compatibility">Browser Compatibility</a></li>
+                <li><a href="#references" data-page="references">References</a></li>
+            </ul>
+        </nav>
+        
+        <main>
+            <section id="about" class="active">
+                <h2><span class="section-number">1.</span>About this Standard</h2>
+                <p>This document defines the WebAPI Standard. It is a <em>Living Standard</em> that provides interfaces and methods for web applications to interact with network resources.</p>
+                
+                <div class="note">
+                    <p>This standard is maintained by the WebAPI Working Group and is constantly evolving based on implementer feedback and web developer needs.</p>
+                </div>
+                
+                <p>The WebAPI Standard defines a set of interfaces and methods that enable web applications to:</p>
+                <ul>
+                    <li>Make network requests</li>
+                    <li>Handle responses</li>
+                    <li>Process data streams</li>
+                    <li>Cache resources</li>
+                    <li>Work offline</li>
+                </ul>
+                
+                <p>This standard aims to provide a consistent API across browsers and platforms, making web development more predictable and reliable.</p>
+                
+                <div class="pagination">
+                    <span></span>
+                    <a href="#history" class="next" data-page="history">Next: History</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=about</code>
+                </div>
+            </section>
+            
+            <section id="history">
+                <h2><span class="section-number">1.1</span>History</h2>
+                <p>The WebAPI Standard evolved from various XMLHttpRequest and related specifications. It represents a modern approach to network communication for web applications.</p>
+                
+                <p>Key milestones in the development of this standard:</p>
+                <dl>
+                    <dt>2025</dt>
+                    <dd>Current Living Standard with enhanced security features</dd>
+                </dl>
+                
+                <div class="pagination">
+                    <a href="#about" class="prev" data-page="about">Previous: About</a>
+                    <a href="#audience" class="next" data-page="audience">Next: Target Audience</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=history</code>
+                </div>
+            </section>
+            
+            <section id="audience">
+                <h2><span class="section-number">1.2</span>Target Audience</h2>
+                <p>This standard is primarily intended for:</p>
+                <ul>
+                    <li>Web browser implementers</li>
+                    <li>Web application developers</li>
+                    <li>Web framework authors</li>
+                    <li>Web API documentation writers</li>
+                </ul>
+                
+                <p>Some sections are more relevant to specific audiences, as indicated in the section introductions.</p>
+                
+                <div class="pagination">
+                    <a href="#history" class="prev" data-page="history">Previous: History</a>
+                    <a href="#fetch-api" class="next" data-page="fetch-api">Next: Fetch API</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=audience</code>
+                </div>
+            </section>
+            
+            <section id="fetch-api">
+                <h2><span class="section-number">2.</span>Fetch API</h2>
+                <p>The Fetch API provides an interface for fetching resources across the network. It is a more powerful and flexible replacement for XMLHttpRequest.</p>
+                
+                <div class="definition">
+                    <p>The <span class="dfn">fetch()</span> method is the primary entry point to the Fetch API. It returns a Promise that resolves to the Response object representing the response to the request.</p>
+                </div>
+                
+                <h3>Syntax</h3>
+                <pre><code>fetch(resource [, options])
+  .then(response => {
+    // Handle response
+  })
+  .catch(error => {
+    // Handle error
+  });</code></pre>
+                
+                <h3>Parameters</h3>
+                <dl>
+                    <dt>resource</dt>
+                    <dd>The resource that you wish to fetch. This can be a URL string or a Request object.</dd>
+                    
+                    <dt>options (optional)</dt>
+                    <dd>An object containing any custom settings you want to apply to the request. The possible options are:
+                        <ul>
+                            <li><code>method</code>: The request method, e.g., <code>GET</code>, <code>POST</code>.</li>
+                            <li><code>headers</code>: Headers to send with the request.</li>
+                            <li><code>body</code>: The request body.</li>
+                            <li><code>mode</code>: The mode of the request, e.g., <code>cors</code>, <code>no-cors</code>, <code>same-origin</code>.</li>
+                            <li><code>credentials</code>: Controls whether credentials are sent with the request.</li>
+                            <li><code>cache</code>: Controls how the request interacts with the browser's cache.</li>
+                            <li><code>redirect</code>: Controls how redirects are handled.</li>
+                            <li><code>referrer</code>: Specifies the referrer of the request.</li>
+                            <li><code>referrerPolicy</code>: Specifies the referrer policy of the request.</li>
+                            <li><code>integrity</code>: Contains the subresource integrity value of the request.</li>
+                            <li><code>keepalive</code>: Allows the request to outlive the page.</li>
+                            <li><code>signal</code>: An AbortSignal object instance; allows you to abort the fetch request.</li>
+                        </ul>
+                    </dd>
+                </dl>
+                
+                <div class="example-box">
+                    <h4>Example: Basic Fetch Request</h4>
+                    <pre><code>fetch('https://api.example.com/data')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation:', error);
+  });</code></pre>
+                    
+                    <div class="example-output">
+                        <p>Console output (assuming successful response with JSON data):</p>
+                        <pre><code>{ "id": 1, "name": "Example Data", "status": "active" }</code></pre>
+                    </div>
+                </div>
+                
+                <div class="pagination">
+                    <a href="#audience" class="prev" data-page="audience">Previous: Target Audience</a>
+                    <a href="#promises" class="next" data-page="promises">Next: Promises</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=fetch-api</code>
+                </div>
+            </section>
+            
+            <section id="promises">
+                <h2><span class="section-number">2.1</span>Promises</h2>
+                <p>The Fetch API is built on Promises, which provide a way to handle asynchronous operations.</p>
+                
+                <div class="definition">
+                    <p>A <span class="dfn">Promise</span> is an object representing the eventual completion or failure of an asynchronous operation.</p>
+                </div>
+                
+                <p>Promises have three states:</p>
+                <ul>
+                    <li><strong>Pending</strong>: Initial state, neither fulfilled nor rejected.</li>
+                    <li><strong>Fulfilled</strong>: The operation completed successfully.</li>
+                    <li><strong>Rejected</strong>: The operation failed.</li>
+                </ul>
+                
+                <p>Promises provide methods to handle these states:</p>
+                <ul>
+                    <li><code>then()</code>: Handles fulfillment.</li>
+                    <li><code>catch()</code>: Handles rejection.</li>
+                    <li><code>finally()</code>: Executes code regardless of the Promise's state.</li>
+                </ul>
+                
+                <div class="pagination">
+                    <a href="#fetch-api" class="prev" data-page="fetch-api">Previous: Fetch API</a>
+                    <a href="#async-await" class="next" data-page="async-await">Next: Async/Await</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=promises</code>
+                </div>
+            </section>
+            
+            <section id="async-await">
+                <h2><span class="section-number">2.2</span>Async/Await</h2>
+                <p>The async/await syntax provides a more elegant way to work with Promises.</p>
+                
+                <div class="definition">
+                    <p>The <span class="dfn">async</span> keyword declares an asynchronous function that returns a Promise.</p>
+                    <p>The <span class="dfn">await</span> keyword pauses the execution of an async function until a Promise is settled.</p>
+                </div>
+                
+                <div class="example-box">
+                    <h4>Example: Fetch with Async/Await</h4>
+                    <pre><code>async function fetchData() {
+  try {
+    const response = await fetch('https://api.example.com/data');
+    
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+    throw error;
+  }
+}</code></pre>
+                </div>
+                
+                <div class="note">
+                    <p>Error handling with async/await is done using try/catch blocks, which provides a more synchronous-like code structure for handling errors.</p>
+                </div>
+                
+                <div class="pagination">
+                    <a href="#promises" class="prev" data-page="promises">Previous: Promises</a>
+                    <a href="#request-interface" class="next" data-page="request-interface">Next: Request Interface</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=async-await</code>
+                </div>
+            </section>
+            
+            <section id="request-interface">
+                <h2><span class="section-number">3.</span>Request Interface</h2>
+                <p>The Request interface represents a resource request.</p>
+                
+                <div class="definition">
+                    <p>A <span class="dfn">Request</span> object represents a request for a resource. It can be created explicitly using the Request constructor or implicitly by the fetch() method.</p>
+                </div>
+                
+                <h3>Constructor</h3>
+                <pre><code>new Request(input [, options])</code></pre>
+                
+                <h3>Properties</h3>
+                <ul>
+                    <li><code>method</code>: The request method (GET, POST, etc.).</li>
+                    <li><code>url</code>: The URL of the request.</li>
+                    <li><code>headers</code>: The headers of the request.</li>
+                    <li><code>destination</code>: The type of content being requested.</li>
+                    <li><code>referrer</code>: The referrer of the request.</li>
+                    <li><code>referrerPolicy</code>: The referrer policy of the request.</li>
+                    <li><code>mode</code>: The mode of the request (cors, no-cors, same-origin, navigate).</li>
+                    <li><code>credentials</code>: The credentials mode of the request (omit, same-origin, include).</li>
+                    <li><code>cache</code>: The cache mode of the request.</li>
+                    <li><code>redirect</code>: The redirect mode of the request.</li>
+                    <li><code>integrity</code>: The integrity metadata of the request.</li>
+                    <li><code>keepalive</code>: Indicates whether the request can outlive the page.</li>
+                    <li><code>signal</code>: An AbortSignal object instance.</li>
+                    <li><code>bodyUsed</code>: Indicates whether the body has been used.</li>
+                </ul>
+                
+                <h3>Methods</h3>
+                <ul>
+                    <li><code>clone()</code>: Creates a copy of the request object.</li>
+                    <li><code>arrayBuffer()</code>: Returns a promise that resolves with an ArrayBuffer representation of the request body.</li>
+                    <li><code>blob()</code>: Returns a promise that resolves with a Blob representation of the request body.</li>
+                    <li><code>formData()</code>: Returns a promise that resolves with a FormData representation of the request body.</li>
+                    <li><code>json()</code>: Returns a promise that resolves with a JSON representation of the request body.</li>
+                    <li><code>text()</code>: Returns a promise that resolves with a text representation of the request body.</li>
+                </ul>
+                
+                <div class="pagination">
+                    <a href="#async-await" class="prev" data-page="async-await">Previous: Async/Await</a>
+                    <a href="#response-interface" class="next" data-page="response-interface">Next: Response Interface</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=request-interface</code>
+                </div>
+            </section>
+            
+            <section id="response-interface">
+                <h2><span class="section-number">4.</span>Response Interface</h2>
+                <p>The Response interface represents the response to a request.</p>
+                
+                <div class="definition">
+                    <p>A <span class="dfn">Response</span> object represents the response to a request, including headers, status, and the response body.</p>
+                </div>
+                
+                <h3>Constructor</h3>
+                <pre><code>new Response(body [, options])</code></pre>
+                
+                <h3>Properties</h3>
+                <ul>
+                    <li><code>headers</code>: The headers of the response.</li>
+                    <li><code>ok</code>: Indicates whether the response was successful (status in 200-299 range).</li>
+                    <li><code>redirected</code>: Indicates whether the response is the result of a redirect.</li>
+                    <li><code>status</code>: The status code of the response.</li>
+                    <li><code>statusText</code>: The status message corresponding to the status code.</li>
+                    <li><code>type</code>: The type of the response (basic, cors, error, opaque, opaqueredirect).</li>
+                    <li><code>url</code>: The URL of the response.</li>
+                    <li><code>bodyUsed</code>: Indicates whether the body has been used.</li>
+                </ul>
+                
+                <h3>Methods</h3>
+                <ul>
+                    <li><code>clone()</code>: Creates a copy of the response object.</li>
+                    <li><code>arrayBuffer()</code>: Returns a promise that resolves with an ArrayBuffer representation of the response body.</li>
+                    <li><code>blob()</code>: Returns a promise that resolves with a Blob representation of the response body.</li>
+                    <li><code>formData()</code>: Returns a promise that resolves with a FormData representation of the response body.</li>
+                    <li><code>json()</code>: Returns a promise that resolves with a JSON representation of the response body.</li>
+                    <li><code>text()</code>: Returns a promise that resolves with a text representation of the response body.</li>
+                </ul>
+                
+                <div class="example-box">
+                    <h4>Example: Creating a Response</h4>
+                    <pre><code>// Create a JSON response
+const jsonResponse = new Response(JSON.stringify({
+  message: 'Success',
+  data: { id: 1, name: 'Example' }
+}), {
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  status: 200,
+  statusText: 'OK'
+});</code></pre>
+                </div>
+                
+                <div class="pagination">
+                    <a href="#request-interface" class="prev" data-page="request-interface">Previous: Request Interface</a>
+                    <a href="#headers" class="next" data-page="headers">Next: Headers</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=response-interface</code>
+                </div>
+            </section>
+            
+            <section id="headers">
+                <h2><span class="section-number">5.</span>Headers</h2>
+                <p>The Headers interface represents HTTP headers, allowing you to perform various actions on HTTP request and response headers.</p>
+                
+                <div class="definition">
+                    <p>The <span class="dfn">Headers</span> interface represents a collection of HTTP headers. It provides methods to get, set, add, and delete headers.</p>
+                </div>
+                
+                <h3>Constructor</h3>
+                <pre><code>new Headers([init])</code></pre>
+                
+                <h3>Methods</h3>
+                <ul>
+                    <li><code>append(name, value)</code>: Appends a new value to an existing header, or adds the header if it doesn't exist.</li>
+                    <li><code>delete(name)</code>: Deletes a header from the Headers object.</li>
+                    <li><code>get(name)</code>: Returns the first value of a given header name.</li>
+                    <li><code>has(name)</code>: Returns a boolean indicating whether the Headers object contains the specified header.</li>
+                    <li><code>set(name, value)</code>: Sets a new value for an existing header, or adds the header if it doesn't exist.</li>
+                    <li><code>entries()</code>: Returns an iterator for all name/value pairs in the Headers object.</li>
+                    <li><code>keys()</code>: Returns an iterator for all header names.</li>
+                    <li><code>values()</code>: Returns an iterator for all header values.</li>
+                </ul>
+                
+                <div class="example-box">
+                    <h4>Example: Working with Headers</h4>
+                    <pre><code>// Create headers object
+const headers = new Headers();
+
+// Add headers
+headers.append('Content-Type', 'application/json');
+headers.append('Authorization', 'Bearer token123');
+
+// Check if header exists
+if (headers.has('Content-Type')) {
+  console.log('Content-Type:', headers.get('Content-Type'));
+}
+
+// Use headers in fetch
+fetch('/api/data', {
+  method: 'POST',
+  headers: headers,
+  body: JSON.stringify({ key: 'value' })
+});</code></pre>
+                </div>
+                
+                <div class="pagination">
+                    <a href="#response-interface" class="prev" data-page="response-interface">Previous: Response Interface</a>
+                    <a href="#streams" class="next" data-page="streams">Next: Streams API</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=headers</code>
+                </div>
+            </section>
+            
+            <section id="streams">
+                <h2><span class="section-number">6.</span>Streams API</h2>
+                <p>The Streams API allows JavaScript to programmatically access streams of data received over the network and process them chunk by chunk.</p>
+                
+                <div class="definition">
+                    <p>The <span class="dfn">Streams API</span> provides a standard way to break down a resource into small chunks and process them bit by bit, without needing to load the entire resource into memory.</p>
+                </div>
+                
+                <h3>Types of Streams</h3>
+                <ul>
+                    <li><strong>ReadableStream</strong>: Represents a readable stream of data.</li>
+                    <li><strong>WritableStream</strong>: Represents a writable stream of data.</li>
+                    <li><strong>TransformStream</strong>: Represents a transform stream that can modify data as it passes through.</li>
+                </ul>
+                
+                <h3>ReadableStream Methods</h3>
+                <ul>
+                    <li><code>getReader()</code>: Returns a ReadableStreamDefaultReader.</li>
+                    <li><code>cancel(reason)</code>: Cancels the stream.</li>
+                    <li><code>pipeTo(destination)</code>: Pipes the stream to a WritableStream.</li>
+                    <li><code>pipeThrough(transform)</code>: Pipes the stream through a TransformStream.</li>
+                    <li><code>tee()</code>: Splits the stream into two branches.</li>
+                </ul>
+                
+                <div class="example-box">
+                    <h4>Example: Processing a Stream</h4>
+                    <pre><code>fetch('/large-file.json')
+  .then(response => {
+    const reader = response.body.getReader();
+    
+    function readChunk() {
+      return reader.read().then(({ done, value }) => {
+        if (done) {
+          console.log('Stream complete');
+          return;
+        }
+        
+        // Process chunk
+        console.log('Received chunk:', value.length, 'bytes');
+        
+        // Continue reading
+        return readChunk();
+      });
+    }
+    
+    return readChunk();
+  });</code></pre>
+                </div>
+                
+                <div class="pagination">
+                    <a href="#headers" class="prev" data-page="headers">Previous: Headers</a>
+                    <a href="#service-workers" class="next" data-page="service-workers">Next: Service Workers</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=streams</code>
+                </div>
+            </section>
+            
+            <section id="service-workers">
+                <h2><span class="section-number">7.</span>Service Workers</h2>
+                <p>Service Workers act as a proxy between web applications, the browser, and the network, enabling features like offline support, background sync, and push notifications.</p>
+                
+                <div class="definition">
+                    <p>A <span class="dfn">Service Worker</span> is a script that your browser runs in the background, separate from a web page, enabling features that don't need a web page or user interaction.</p>
+                </div>
+                
+                <h3>Lifecycle</h3>
+                <ol>
+                    <li><strong>Registration</strong>: The service worker is registered using the navigator.serviceWorker.register() method.</li>
+                    <li><strong>Installation</strong>: The service worker is installed and the install event is triggered.</li>
+                    <li><strong>Activation</strong>: The service worker is activated and the activate event is triggered.</li>
+                    <li><strong>Idle</strong>: The service worker is idle until it receives events.</li>
+                    <li><strong>Termination</strong>: The service worker is terminated when not in use to save memory.</li>
+                </ol>
+                
+                <h3>Events</h3>
+                <ul>
+                    <li><code>install</code>: Triggered when the service worker is installed.</li>
+                    <li><code>activate</code>: Triggered when the service worker is activated.</li>
+                    <li><code>fetch</code>: Triggered when a request is made from the web page.</li>
+                    <li><code>message</code>: Triggered when a message is sent to the service worker.</li>
+                    <li><code>push</code>: Triggered when a push notification is received.</li>
+                    <li><code>sync</code>: Triggered when a background sync is requested.</li>
+                </ul>
+                
+                <div class="example-box">
+                    <h4>Example: Registering a Service Worker</h4>
+                    <pre><code>if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(registration => {
+      console.log('Service Worker registered with scope:', registration.scope);
+    })
+    .catch(error => {
+      console.error('Service Worker registration failed:', error);
+    });
+}</code></pre>
+                </div>
+                
+                <div class="pagination">
+                    <a href="#streams" class="prev" data-page="streams">Previous: Streams API</a>
+                    <a href="#cache-api" class="next" data-page="cache-api">Next: Cache API</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=service-workers</code>
+                </div>
+            </section>
+            
+            <section id="cache-api">
+                <h2><span class="section-number">8.</span>Cache API</h2>
+                <p>The Cache API provides a mechanism for storing and retrieving network requests and responses, allowing for offline access to cached content.</p>
+                
+                <div class="definition">
+                    <p>The <span class="dfn">Cache API</span> provides a storage mechanism for Request/Response object pairs that are cached, for example as part of the ServiceWorker lifecycle.</p>
+                </div>
+                
+                <h3>Methods</h3>
+                <h4>CacheStorage (accessed via caches global)</h4>
+                <ul>
+                    <li><code>open(cacheName)</code>: Returns a Promise that resolves to the Cache object matching the cacheName.</li>
+                    <li><code>match(request, options)</code>: Checks if a given Request is a key in any of the Cache objects.</li>
+                    <li><code>has(cacheName)</code>: Returns a Promise that resolves to true if a Cache object matching the cacheName exists.</li>
+                    <li><code>delete(cacheName)</code>: Finds the Cache object matching the cacheName and deletes it.</li>
+                    <li><code>keys()</code>: Returns a Promise that resolves to an array of strings containing the names of all Cache objects.</li>
+                </ul>
+                
+                <div class="pagination">
+                    <a href="#service-workers" class="prev" data-page="service-workers">Previous: Service Workers</a>
+                    <a href="#basic-fetch" class="next" data-page="basic-fetch">Next: Basic Fetch Example</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=cache-api</code>
+                </div>
+            </section>
+            
+            <section id="basic-fetch">
+                <h2><span class="section-number">9.</span>Basic Fetch Example</h2>
+                <p>This section provides a complete example of using the Fetch API for a basic GET request.</p>
+                
+                <div class="example-box">
+                    <h4>HTML</h4>
+                    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Fetch API Example&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Fetch API Example&lt;/h1&gt;
+    &lt;button id="fetchButton"&gt;Fetch Data&lt;/button&gt;
+    &lt;div id="result"&gt;Results will appear here...&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                    
+                    <h4>JavaScript</h4>
+                    <pre><code>document.getElementById('fetchButton').addEventListener('click', () => {
+  const resultDiv = document.getElementById('result');
+  
+  // Show loading state
+  resultDiv.innerHTML = '&lt;p&gt;Loading...&lt;/p&gt;';
+  
+  // Fetch data from an API
+  fetch('https://jsonplaceholder.typicode.com/posts/1')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      resultDiv.innerHTML = `
+        &lt;h2&gt;${data.title}&lt;/h2&gt;
+        &lt;p&gt;${data.body}&lt;/p&gt;
+        &lt;p&gt;&lt;strong&gt;User ID:&lt;/strong&gt; ${data.userId}&lt;/p&gt;
+      `;
+    })
+    .catch(error => {
+      resultDiv.innerHTML = `&lt;p&gt;Error: ${error.message}&lt;/p&gt;`;
+    });
+});</code></pre>
+                </div>
+                
+                <div class="pagination">
+                    <a href="#cache-api" class="prev" data-page="cache-api">Previous: Cache API</a>
+                    <a href="#post-request" class="next" data-page="post-request">Next: POST Request Example</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=basic-fetch</code>
+                </div>
+            </section>
+            
+            <section id="post-request">
+                <h2><span class="section-number">10.</span>POST Request Example</h2>
+                <p>This section demonstrates how to make a POST request using the Fetch API.</p>
+                
+                <div class="example-box">
+                    <h4>JavaScript Example</h4>
+                    <pre><code>// Create the data object to send
+const postData = {
+  title: 'My Post Title',
+  body: 'This is the content of my post.',
+  userId: 1
+};
+
+// Make the POST request
+fetch('https://jsonplaceholder.typicode.com/posts', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(postData)
+})
+.then(response => {
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+  return response.json();
+})
+.then(data => {
+  console.log('Post created:', data);
+})
+.catch(error => {
+  console.error('Error:', error);
+});</code></pre>
+                </div>
+                
+                <div class="pagination">
+                    <a href="#basic-fetch" class="prev" data-page="basic-fetch">Previous: Basic Fetch</a>
+                    <a href="#streaming-response" class="next" data-page="streaming-response">Next: Streaming Response</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=post-request</code>
+                </div>
+            </section>
+            
+            <section id="streaming-response">
+                <h2><span class="section-number">11.</span>Streaming Response Example</h2>
+                <p>This section demonstrates how to process a response using streams for efficient handling of large data.</p>
+                
+                <div class="example-box">
+                    <h4>Example: Processing Streamed Data</h4>
+                    <pre><code>async function fetchWithProgress(url) {
+  const response = await fetch(url);
+  const contentLength = response.headers.get('content-length');
+  const total = parseInt(contentLength, 10);
+  let loaded = 0;
+  
+  const reader = response.body.getReader();
+  const chunks = [];
+  
+  while (true) {
+    const { done, value } = await reader.read();
+    
+    if (done) break;
+    
+    chunks.push(value);
+    loaded += value.length;
+    
+    // Update progress
+    const progress = Math.round((loaded / total) * 100);
+    console.log(`Downloaded: ${progress}%`);
+  }
+  
+  // Combine chunks
+  const allChunks = new Uint8Array(loaded);
+  let position = 0;
+  for (const chunk of chunks) {
+    allChunks.set(chunk, position);
+    position += chunk.length;
+  }
+  
+  return new Response(allChunks);
+}</code></pre>
+                </div>
+                
+                <div class="pagination">
+                    <a href="#post-request" class="prev" data-page="post-request">Previous: POST Request</a>
+                    <a href="#browser-compatibility" class="next" data-page="browser-compatibility">Next: Browser Compatibility</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=streaming-response</code>
+                </div>
+            </section>
+            
+            <section id="browser-compatibility">
+                <h2><span class="section-number">12.</span>Browser Compatibility</h2>
+                <p>This section provides information about browser compatibility for the WebAPI features described in this standard.</p>
+                
+                <h3>Fetch API</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Chrome</th>
+                            <th>Firefox</th>
+                            <th>Safari</th>
+                            <th>Edge</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Basic fetch()</td>
+                            <td>42+</td>
+                            <td>39+</td>
+                            <td>10.1+</td>
+                            <td>14+</td>
+                        </tr>
+                        <tr>
+                            <td>Response.body (Streams)</td>
+                            <td>43+</td>
+                            <td>65+</td>
+                            <td>10.1+</td>
+                            <td>79+</td>
+                        </tr>
+                        <tr>
+                            <td>AbortController</td>
+                            <td>66+</td>
+                            <td>57+</td>
+                            <td>11.1+</td>
+                            <td>16+</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="note">
+                    <p>Browser compatibility information is current as of August 2025. For the most up-to-date information, consult browser-specific documentation.</p>
+                </div>
+                
+                <div class="pagination">
+                    <a href="#streaming-response" class="prev" data-page="streaming-response">Previous: Streaming Response</a>
+                    <a href="#references" class="next" data-page="references">Next: References</a>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=browser-compatibility</code>
+                </div>
+            </section>
+            
+            <section id="references">
+                <h2><span class="section-number">13.</span>References</h2>
+                <p>This section provides references to related specifications, documentation, and resources.</p>
+                
+                <h3>Related Specifications</h3>
+                <ul>
+                    <li><a href="https://fetch.spec.whatwg.org/">Fetch Standard</a> - The official Fetch API specification</li>
+                    <li><a href="https://w3c.github.io/ServiceWorker/">Service Workers Specification</a> - The official Service Workers specification</li>
+                    <li><a href="https://streams.spec.whatwg.org/">Streams Standard</a> - The official Streams API specification</li>
+                </ul>
+                
+                <h3>Documentation</h3>
+                <ul>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">MDN Web Docs: Fetch API</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">MDN Web Docs: Service Workers</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Cache">MDN Web Docs: Cache API</a></li>
+                </ul>
+                
+                <div class="pagination">
+                    <a href="#browser-compatibility" class="prev" data-page="browser-compatibility">Previous: Browser Compatibility</a>
+                    <span></span>
+                </div>
+                
+                <div class="page-url">
+                    <code>https://ngiotsas.github.io/webapihtml/?page=references</code>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <footer>
+        <p>© 2025 WebAPI Working Group. All Rights Reserved.</p>
+        <p>This is a Living Standard. Participation in the development of this standard is welcome.</p>
+        <p><a href="https://ngiotsas.github.io/webapihtml/">https://ngiotsas.github.io/webapihtml/</a></p>
+    </footer>
+    
+    <script>
+        // Navigation state management
+        let currentPage = 'about';
+        
+        // Initialize page
+        function init() {
+            // Get page from URL or default to 'about'
+            const urlParams = new URLSearchParams(window.location.search);
+            const pageParam = urlParams.get('page');
+            
+            if (pageParam && document.getElementById(pageParam)) {
+                currentPage = pageParam;
+            }
+            
+            showPage(currentPage);
+            updateActiveNavLink(currentPage);
+            setupNavigation();
+        }
+        
+        // Show specific page
+        function showPage(pageId) {
+            // Hide all sections
+            document.querySelectorAll('main section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show target section
+            const targetSection = document.getElementById(pageId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                
+                // Update page title
+                const heading = targetSection.querySelector('h2');
+                if (heading) {
+                    const title = heading.textContent.replace(/^[\d.]+\s*/, '');
+                    document.title = `WebAPI Standard - ${title}`;
+                }
+                
+                // Update URL
+                const newUrl = `${window.location.pathname}?page=${pageId}`;
+                history.replaceState({ page: pageId }, '', newUrl);
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+        }
+        
+        // Update active navigation link
+        function updateActiveNavLink(pageId) {
+            document.querySelectorAll('nav a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-page') === pageId) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        // Setup navigation event listeners
+        function setupNavigation() {
+            document.querySelectorAll('nav a[data-page]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const pageId = this.getAttribute('data-page');
+                    currentPage = pageId;
+                    showPage(pageId);
+                    updateActiveNavLink(pageId);
+                });
+            });
+            
+            // Pagination links
+            document.querySelectorAll('.pagination a[data-page]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const pageId = this.getAttribute('data-page');
+                    currentPage = pageId;
+                    showPage(pageId);
+                    updateActiveNavLink(pageId);
+                });
+            });
+            
+            // Header logo click
+            document.querySelector('header h1').addEventListener('click', function() {
+                currentPage = 'about';
+                showPage('about');
+                updateActiveNavLink('about');
+            });
+        }
+        
+        // Search functionality
+        function filterNavItems() {
+            const searchInput = document.getElementById('search').value.toLowerCase();
+            const navItems = document.querySelectorAll('#nav-list li');
+            
+            navItems.forEach(item => {
+                const link = item.querySelector('a');
+                if (link) {
+                    const itemText = link.textContent.toLowerCase();
+                    item.style.display = itemText.includes(searchInput) ? 'block' : 'none';
+                } else if (item.classList.contains('section-title')) {
+                    // Handle section titles
+                    let hasVisibleItems = false;
+                    let nextItem = item.nextElementSibling;
+                    
+                    while (nextItem && !nextItem.classList.contains('section-title')) {
+                        if (nextItem.style.display !== 'none') {
+                            hasVisibleItems = true;
+                            break;
+                        }
+                        nextItem = nextItem.nextElementSibling;
+                    }
+                    
+                    item.style.display = (hasVisibleItems || searchInput === '') ? 'block' : 'none';
+                }
+            });
+        }
+        
+        // Handle browser back/forward
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.page) {
+                currentPage = event.state.page;
+                showPage(currentPage);
+                updateActiveNavLink(currentPage);
+            }
+        });
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
